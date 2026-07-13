@@ -1,0 +1,57 @@
+# Streaming / diagnostic dashboard run — game view + HUD, AI-vision minimap,
+# manual takeover, options menu, goals, and run controls.
+# Run: python -m pokeai run --config configs/dashboard.yaml
+# Starts PAUSED: press START (or Space) in the dashboard window to begin.
+#
+# In-window sound (Options ▸ Sound) needs a sound-enabled init state — use
+# states/init_state_starter_sound.gb_state (built with make_starter_state.py
+# --sound). The plain init_state_starter.gb_state has APU sampling disabled.
+emulator:
+  rom_path: "roms/Pokemon_Red.gb"
+  init_state_path: "states/init_state_starter_sound.gb_state"
+  title_state_path: "states/title_screen.gb_state"  # occasional from-the-start runs
+  render: false                 # PyBoy window off; frames shown in the dashboard
+  sound: false                  # native PyBoy-window audio off; dashboard plays it (see ui.sound)
+  emulation_speed: 1            # 1x = real time (needed for smooth video + audio)
+
+environment:
+  max_steps: 4096         # longer episodes: goals like errands/healing need room to play out
+  frame_skip: 24
+  observation_mode: "ram"
+  full_reset_every: 10    # every 10 episodes, wipe curiosity memory for a truly fresh start
+  title_reset_every: 25   # every 25 episodes, start from the title screen (play the intro)
+
+agent:
+  type: "adventurer"    # roots-driven Needs/Goal arbiter: heals, trains, runs gate errands
+  seed: 42              # (switch live in Options ▸ AI strategy: Adventure/Plan/Battle/...)
+
+reward:
+  weights:
+    badge: 100.0
+    event: 1.0
+    map: 5.0
+    level: 1.0
+    blackout: 50.0
+    curiosity: 0.05
+    stuck_penalty: 0.05
+    stuck_threshold: 8
+    battle_damage: 5.0
+    battle_win: 10.0
+    faint_penalty: 10.0
+    heal: 2.0
+    level_cap: 50
+
+logging:
+  run_id: null
+  output_dir: "runs/"
+  log_level: "INFO"
+  episodes: 100000     # effectively endless: the dashboard runs until you press STOP
+
+ui:
+  enabled: true
+  scale: 3
+  start_paused: true
+  sound: true           # play game audio through the dashboard window
+  volume: 80
+  view_mode: "full"     # full | clean | game  (Tab cycles; clean/game are stream-friendly)
+  smooth_rendering: true

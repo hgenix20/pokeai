@@ -1,0 +1,41 @@
+[project]
+name = "pokeai"
+version = "0.1.0"
+description = "Modular Pokémon Red AI learning framework"
+requires-python = ">=3.10"
+dependencies = [
+    "pyboy>=2.6.1",
+    "gymnasium>=0.29.0",
+    "pydantic>=2.0.0",
+    "pyyaml>=6.0",
+    "numpy>=1.24.0",
+    "pygame>=2.5.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.1.0",
+]
+
+[project.scripts]
+pokeai = "pokeai.cli:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint.per-file-ignores]
+# Historical one-off debug scripts keep their compact one-liner style.
+"scripts/auto_init_state.py" = ["E701", "E702"]
+"scripts/debug_movement.py" = ["E701", "E702"]
+# Imports after pytest.importorskip("torch") — the standard skip pattern.
+"tests/test_dqn_agent.py" = ["E402"]

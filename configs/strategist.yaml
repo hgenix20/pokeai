@@ -1,0 +1,50 @@
+# Strategist (hybrid expert) — the stream-ready strategy.
+#   In battle:  type-chart move selection through the real menus (BattleBrain)
+#   Overworld:  novelty-seeking frontier walker (talks to NPCs when blocked)
+# Watch it play:    python -m pokeai run --config configs/strategist.yaml --ui
+# Headless check:   python -m pokeai run --config configs/strategist.yaml --episodes 2
+emulator:
+  rom_path: "roms/Pokemon_Red.gb"
+  init_state_path: "states/init_state_starter.gb_state"
+  render: false
+  sound: false
+  emulation_speed: 0      # the dashboard's 1x/2x/4x/MAX buttons override this live
+
+environment:
+  max_steps: 2048
+  frame_skip: 24
+  observation_mode: "ram+tiles"
+
+agent:
+  type: "strategist"
+  seed: 42
+
+reward:
+  weights:
+    badge: 100.0
+    event: 1.0
+    map: 5.0
+    level: 1.0
+    blackout: 50.0
+    curiosity: 0.05
+    stuck_penalty: 0.05
+    stuck_threshold: 8
+    # Battle shaping (v2) — scored for the run report even though the
+    # Strategist doesn't learn from reward.
+    battle_damage: 5.0
+    battle_win: 10.0
+    faint_penalty: 10.0
+    heal: 2.0
+    level_cap: 50
+
+logging:
+  run_id: null
+  output_dir: "runs/"
+  episodes: 100000        # endless when streaming; cap with --episodes N for a benchmark
+
+ui:
+  enabled: false          # pass --ui (or set true) for the dashboard
+  scale: 3
+  start_paused: false
+  view_mode: "clean"      # big game view + goals: stream-friendly default
+  sound: true

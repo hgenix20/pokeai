@@ -1,0 +1,31 @@
+# Heuristic agent baseline run.
+# Replace ROM_PATH and INIT_STATE_PATH placeholders before running.
+emulator:
+  rom_path: "roms/Pokemon_Red.gb"
+  init_state_path: "states/init_state_starter.gb_state"
+  render: false
+  sound: false
+  emulation_speed: 0
+
+environment:
+  max_steps: 2048
+  frame_skip: 24
+  observation_mode: "ram"
+
+agent:
+  type: "heuristic"
+  seed: 42
+
+reward:
+  weights:
+    badge: 100.0
+    event: 1.0
+    map: 0.5
+    level: 0.1
+    blackout: 50.0
+
+logging:
+  run_id: null
+  output_dir: "runs/"
+  log_level: "INFO"
+  episodes: 10

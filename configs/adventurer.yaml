@@ -1,0 +1,56 @@
+# Adventurer run — the goal-directed brain. A Needs/Goal arbiter (driven by
+# docs/AGENT_ROOTS.md) decides what to do each step — survive, make progress,
+# prepare, grow, or explore — and narrates its reasoning in the dashboard.
+# Run: python -m pokeai run --config configs/adventurer.yaml
+# Starts PAUSED: press START (or Space) in the dashboard window to begin.
+# (Switch to it live from Options ▸ AI strategy: "Adventure" too.)
+emulator:
+  rom_path: "roms/Pokemon_Red.gb"
+  init_state_path: "states/init_state_starter_sound.gb_state"
+  title_state_path: "states/title_screen.gb_state"
+  render: false
+  sound: false
+  emulation_speed: 1
+
+environment:
+  max_steps: 4096          # longer episodes: goals like "go heal" need room to play out
+  frame_skip: 24
+  observation_mode: "ram"
+  full_reset_every: 10
+  title_reset_every: 25
+
+agent:
+  type: "adventurer"
+  seed: 42
+
+reward:
+  weights:
+    badge: 100.0
+    event: 1.0
+    map: 5.0
+    level: 1.0
+    blackout: 50.0
+    curiosity: 0.05
+    stuck_penalty: 0.05
+    stuck_threshold: 8
+    battle_damage: 5.0
+    battle_win: 10.0
+    faint_penalty: 10.0
+    heal: 2.0
+    level_cap: 50
+
+logging:
+  run_id: null
+  output_dir: "runs/"
+  log_level: "INFO"
+  episodes: 100000
+
+ui:
+  enabled: true
+  scale: 3
+  start_paused: true
+  sound: true
+  volume: 80
+  view_mode: "full"
+  smooth_rendering: true
+  auto_catch: true

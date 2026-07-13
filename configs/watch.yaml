@@ -1,0 +1,31 @@
+# Watch the AI play - renders the game window at normal speed.
+# Run: python -m pokeai run --config configs/watch.yaml
+emulator:
+  rom_path: "roms/Pokemon_Red.gb"
+  init_state_path: "states/init_state_starter.gb_state"
+  render: true
+  sound: true
+  emulation_speed: 1          # 1 = normal Game Boy speed (playable to watch)
+
+environment:
+  max_steps: 2048
+  frame_skip: 24
+  observation_mode: "ram"
+
+agent:
+  type: "heuristic"
+  seed: 42
+
+reward:
+  weights:
+    badge: 100.0
+    event: 1.0
+    map: 0.5
+    level: 0.1
+    blackout: 50.0
+
+logging:
+  run_id: null
+  output_dir: "runs/"
+  log_level: "INFO"
+  episodes: 5
