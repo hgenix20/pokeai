@@ -36,28 +36,26 @@ Key facts that differ from the sections below:
 - The roadmap, goal ladder, loop-engineering protocol, and the whole-system
   validation matrix live in `docs/ROADMAP.md`. The story source of truth is
   `docs/Walkthrough-notes-to-fix.md` (built through its `[[STOP]]` marker).
-- The repo is NOT under git (no `.git`; a `.gitignore` exists). Savestates and
-  docs are the only record until that is fixed (first task in ROADMAP.md).
 
 ---
 
 ## 1. What this project is
 
 **pokeai** is a modular framework for training and evaluating AI agents that
-play **Pokémon Red** (Game Boy) through the **PyBoy** emulator. It is the
-software substrate for an experimental cognitive-architecture research program
-called **HCQM** (a "Hierarchical Cognitive Capability Model" — see the glossary).
-The framework:
+play **Pokémon Red** (Game Boy) through the **PyBoy** emulator. Beside the
+extrinsic game reward it tracks a small set of named capabilities (curiosity,
+adaptability, recovery from failure, spatial perception) and reports how each
+develops across episodes (see the glossary). The framework:
 
 - Runs the game headlessly via PyBoy and exposes it as a **Gymnasium**
   environment with a 7-action discrete action space.
 - Reads game state directly from emulator **RAM** (party, position, badges,
   battle, etc.) — no pixel/vision model is required for the agent.
-- Computes a **reward** from state deltas (extrinsic milestones + HCQM intrinsic
+- Computes a **reward** from state deltas (extrinsic milestones + intrinsic
   signals like curiosity and anti-perseveration).
 - Supports three agents: `random`, `heuristic`, and a from-scratch PyTorch
   **DQN** learner.
-- Logs every episode to JSONL and aggregates a summary + an HCQM "capability
+- Logs every episode to JSONL and aggregates a summary + a "capability
   acquisition profile."
 - Ships a rich **pygame dashboard** that doubles as (a) a diagnostic tool and
   (b) a **streaming/manual-play** front-end (sound, manual takeover, live
@@ -127,7 +125,7 @@ pokeai/
 │   ├── env/
 │   │   ├── pokemon_red_env.py   # Gymnasium env, observation assembly
 │   │   ├── action_controller.py # 7-action space → button holds
-│   │   └── reward_engine.py      # reward from state deltas + HCQM intrinsics
+│   │   └── reward_engine.py      # reward from state deltas + intrinsics
 │   ├── agents/
 │   │   ├── base.py random_agent.py heuristic_agent.py dqn_agent.py __init__.py
 │   ├── knowledge/
@@ -135,7 +133,7 @@ pokeai/
 │   │   └── visit_memory.py   # per-position visit counts (curiosity/novelty)
 │   ├── training/loop.py      # the episode loop + StepMonitor protocol
 │   ├── evaluation/
-│   │   ├── metrics.py logger.py aggregate.py   # JSONL + reports + HCQM profile
+│   │   ├── metrics.py logger.py aggregate.py   # JSONL + reports + capability profile
 │   ├── ui/                   # the dashboard (pygame)
 │   │   ├── dashboard.py run_control.py thoughts.py audio.py goals.py
 │   └── utils/hashing.py      # config hash for experiment attribution
@@ -208,7 +206,7 @@ YAML run config. Sections:
 - **`environment`** — `max_steps` (truncation), `frame_skip` (frames per action,
   24), `observation_mode` ∈ {`ram`, `ram+tiles`}.
 - **`agent`** — `type` ∈ {`random`, `heuristic`, `dqn`}, `seed`.
-- **`reward.weights`** — `badge`, `event`, `map`, `level`, `blackout`, plus HCQM
+- **`reward.weights`** — `badge`, `event`, `map`, `level`, `blackout`, plus the
   intrinsics `curiosity`, `stuck_penalty`, `stuck_threshold`.
 - **`logging`** — `run_id` (auto if null), `output_dir`, `episodes`.
 - **`ui`** (UIConfig) — `enabled`, `scale` (game ×N), `start_paused`, and the
@@ -288,11 +286,11 @@ checkpoints). `ActionController.apply(action)` holds the mapped button for
   by agents:
   - `ram` mode: 12 RAM scalars + 14 battle-perception features = **26 dims**.
   - `ram+tiles` mode: 12 + 360 (18×20 walkability grid) + 5 novelty features
-    (current tile + 4 neighbors) + 14 battle = **391 dims** (HCQM "Gv" spatial
+    (current tile + 4 neighbors) + 14 battle = **391 dims** (spatial
     vision). The walkability grid and novelty are zeroed in battle/menus.
 - `obs_dim_for(mode)` is the single source of truth shared by the env and the
   agent factory so they can never disagree.
-- `info` carries step/reward/badge/event/map counts plus the HCQM capability
+- `info` carries step/reward/badge/event/map counts plus the capability
   counters from the reward engine.
 
 ### 7.3 `env/reward_engine.py` — `RewardEngine`
@@ -303,7 +301,7 @@ Stateful across an episode; diffs the current `GameState` against the previous.
 - **Extrinsic:** `badge` (×weight per new badge), `event` (per new event flag),
   `map` (per newly-seen map), `level` (per total-level increase), `blackout`
   (one-shot negative when all party faints).
-- **HCQM intrinsic** (off by default; enabled in `train_dqn.yaml`):
+- **Intrinsic reward** (off by default; enabled in `train_dqn.yaml`):
   - `curiosity` (5.1): `weight × novelty(pos)` where
     `novelty = 1/sqrt(1+visit_count)` — pushes toward unseen tiles. Visit counts
     persist **across episodes within a run**.
@@ -343,14 +341,14 @@ lazily**, only when a DQN is actually built.
   random walk over the 4 directions (no NOOP/A/B). A pipeline-validation harness,
   not a real player.
 - **`DQNAgent`** (`dqn_agent.py`) — from-scratch PyTorch DQN (chosen over
-  stable-baselines3 for full control of the HCQM modules):
+  stable-baselines3 for full control of the capability modules):
   - MLP Q-network (`obs_dim → hidden → hidden → 7`), **Welford running
     normalizer** on observations, **circular numpy replay buffer**.
   - **Double-DQN** target (online net selects a*, target net evaluates it) to
     curb the overestimation bias that caused early Q-value collapse.
   - **Boltzmann exploitation** over **z-scored** Q-values: a temperature-scaled
     softmax that caps the top action's probability even if Q-values diverge — a
-    structural "entropy floor" (HCQM §5.3 no-collapse rule). `temperature=0`
+    structural "entropy floor" (the no-collapse rule). `temperature=0`
     falls back to greedy argmax.
   - Epsilon-greedy floor (`epsilon` property = linear decay), periodic target
     sync, periodic checkpointing (`ep{N}.pt` + `latest.pt`). Fresh start by
@@ -491,14 +489,14 @@ routes there (`route_toward_map`).
 ## 9. Evaluation & logging (`evaluation/`)
 
 - **`metrics.py`** — `RunMetrics` dataclass (one per episode) + `TerminationReason`
-  enum (`MAX_STEPS`, `BLACKOUT`, `ALL_BADGES`, `MANUAL`). Includes HCQM capability
+  enum (`MAX_STEPS`, `BLACKOUT`, `ALL_BADGES`, `MANUAL`). Includes capability
   fields and DQN internals (`agent_epsilon`, `agent_loss`).
 - **`logger.py`** — `RunLogger` writes `episodes.jsonl` (append, one JSON/line)
   and `run.json` (metadata; `finalize()` adds `ended_at`/`duration_seconds`).
 - **`aggregate.py`** — `aggregate(run_dir)` reads `episodes.jsonl` and writes:
   - `eval_report.json` — mean/median/max/min/std per numeric metric, termination
     reason counts, blackout rate, "left starting map" count.
-  - `capability_profile.json` — HCQM §7: per-capacity per-episode series + a
+  - `capability_profile.json` — per-capacity per-episode series + a
     collapse-aware **verdict** (`developing`/`stable`/`regressing`/`collapsed`/
     `not_developing`). Capabilities map metrics → desired direction (e.g. 5.1
     curiosity = `unique_tiles_visited` ↑; 5.2 = `repeat_action_rate` ↓; 5.3 =
@@ -599,7 +597,7 @@ dqn→"Deep Q-Net". The bottom bar shows `AI Strategy: <name>` (not the old
   stuck, battles, damage, catches, badges, blackout).
 - **MEMORY** — `VisitMemory` readout (positions known, maps known, novelty,
   hotspots, last-episode result).
-- **CAPABILITIES (HCQM)** — per-episode acquisition sparklines + the DQN
+- **CAPABILITIES** — per-episode acquisition sparklines + the DQN
   learner's internals (ε, loss, steps, buffer).
 - **GOALS** (`goals.py`, `GoalTracker`) — a sticky milestone checklist (get
   starter, reach each city, earn each badge, train to Lv10) keyed off
@@ -689,7 +687,7 @@ real ROM, saves `states/dashboard_preview.png`), `check_acceptance.py`,
 PyBoy by serving scripted RAM snapshots through the **real** `StateReader`, so
 parsing/logic is exercised without a ROM. Notable suites: `test_run_control.py`
 (state machine + loop manual-stop/restart + the `select_action` override),
-`test_goals.py`, `test_cognition.py`, `test_battle_vision.py`, `test_hcqm_2a.py`,
+`test_goals.py`, `test_cognition.py`, `test_battle_vision.py`, `test_exploration.py`,
 `test_phase1_*`, `test_cli.py`, `test_dqn_agent.py`.
 
 > On this machine, run with `--ignore=tests/test_dqn_agent.py` to avoid a torch
@@ -713,10 +711,10 @@ These are environmental, not code bugs (also captured in the assistant memory):
 
 ---
 
-## 15. Glossary (HCQM terms seen in code)
+## 15. Glossary (capability terms seen in code)
 
-- **HCQM** — the cognitive-capability research model this framework evaluates.
-  Capability IDs appear throughout: **5.1 Curiosity** (exploration/novelty),
+- **Capability IDs** — short numeric tags used in code, configs and metrics for
+  the capabilities the framework tracks: **5.1 Curiosity** (exploration/novelty),
   **5.2 Adaptability** (anti-perseveration), **5.3 Adversity** (recover from
   failure / no-collapse), **6.1 Learning agility**, **1.4 Gv** (spatial/visual
   perception = the tile grid), **§7** (developmental capability profiling),

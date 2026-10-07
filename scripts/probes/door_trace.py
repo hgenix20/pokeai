@@ -16,8 +16,6 @@ except (AttributeError, ValueError):
 
 from pokeai.emulator.bizhawk_bridge import BizHawkBridge
 from pokeai.perception.navigator import Navigator
-from pokeai.skills.overworld import Overworld
-from pokeai.emulator.firered_state_reader import FireRedStateReader
 from pokeai.agents.firered_story import vision_ascii
 
 SLOT0 = r"C:\Users\Sagac\OneDrive\KameronOS\PROJECTS\Pokemon-Red-AI\pokeai\states\slots\slot_0.state"
@@ -29,8 +27,6 @@ def main() -> int:
     b.wait_for_bizhawk()
     print("connected:", b.ping(), flush=True)
     nav = Navigator(b)
-    reader = FireRedStateReader(b)
-    ow = Overworld(b, nav, reader)
 
     for _ in range(5):
         b.load_state(SLOT0)

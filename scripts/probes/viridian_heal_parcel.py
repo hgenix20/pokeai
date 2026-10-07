@@ -18,7 +18,7 @@ from pokeai.emulator.bizhawk_bridge import BizHawkBridge
 from pokeai.emulator.firered_state_reader import FireRedStateReader
 from pokeai.perception.navigator import Navigator
 from pokeai.skills.overworld import Overworld
-from pokeai.skills.services import CENTERS, MARTS, Services
+from pokeai.skills.services import MARTS, Services
 
 SLOTS = r"C:\Users\Sagac\OneDrive\KameronOS\PROJECTS\Pokemon-Red-AI\pokeai\states\slots"
 SB1_PTR, SB2_PTR = 0x03005008, 0x0300500C

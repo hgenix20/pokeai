@@ -32,7 +32,9 @@ def main() -> int:
     b.wait_for_bizhawk()
 
     # sequence of cursor positions: start EXIT(6) -> UP OPTION(5) -> UP SAVE(4)
-    say = lambda m: print(f"[{time.strftime('%H:%M:%S')}] {m}", flush=True)
+    def say(m):
+        print(f"[{time.strftime('%H:%M:%S')}] {m}", flush=True)
+
     say("dump 1 (cursor should be on EXIT=6)…")
     d1 = dump(b)
     b.press_button_held("UP", 5)

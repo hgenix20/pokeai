@@ -14,8 +14,6 @@ except (AttributeError, ValueError):
 
 from pokeai.emulator.bizhawk_bridge import BizHawkBridge
 from pokeai.perception.navigator import Navigator
-from pokeai.skills.overworld import Overworld
-from pokeai.emulator.firered_state_reader import FireRedStateReader
 
 SLOTS = r"C:\Users\Sagac\OneDrive\KameronOS\PROJECTS\Pokemon-Red-AI\pokeai\states\slots"
 OUT = r"C:\Users\Sagac\AppData\Local\Temp\claude\C--Program-Files-Git\0ce068f5-fdaf-4e80-b3d3-05f89c188438\scratchpad"
@@ -29,7 +27,6 @@ def main() -> int:
     b = BizHawkBridge(timeout=180)
     b.wait_for_bizhawk()
     nav = Navigator(b)
-    ow = Overworld(b, nav, FireRedStateReader(b))
     # front-door warps discovered on slot 4 (x,y): try the 4 non-gym buildings
     warps = [(25, 11), (36, 10), (25, 18), (36, 19), (26, 26)]
     for wx, wy in warps:

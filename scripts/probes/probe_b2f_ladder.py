@@ -13,8 +13,6 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 from pokeai.emulator.bizhawk_bridge import BizHawkBridge
 from pokeai.perception.navigator import Navigator
-from pokeai.skills.overworld import Overworld
-from pokeai.emulator.firered_state_reader import FireRedStateReader
 
 OUT = r"C:\pokeai-states\probe_b2f"
 
@@ -27,7 +25,6 @@ def main() -> int:
     os.makedirs(OUT, exist_ok=True)
     b = BizHawkBridge(timeout=60)
     b.wait_for_bizhawk()
-    reader = FireRedStateReader(b)
     nav = Navigator(b)
 
     m = nav.current_map()

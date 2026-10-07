@@ -16,7 +16,6 @@ import time
 sys.stdout.reconfigure(encoding="utf-8")
 
 from pokeai.emulator.bizhawk_bridge import BizHawkBridge
-from pokeai.emulator.firered_state_reader import FireRedStateReader
 from pokeai.perception.navigator import Navigator
 
 OUT = r"C:\pokeai-states\probe_r4east"
@@ -32,7 +31,6 @@ def main() -> int:
     os.makedirs(OUT, exist_ok=True)
     b = BizHawkBridge(timeout=60)
     b.wait_for_bizhawk()
-    reader = FireRedStateReader(b)
     nav = Navigator(b)
 
     if "--no-load" not in sys.argv:

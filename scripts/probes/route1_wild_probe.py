@@ -16,7 +16,6 @@ except (AttributeError, ValueError):
     pass
 
 from pokeai.emulator.bizhawk_bridge import BizHawkBridge
-from pokeai.emulator.firered_state_reader import FireRedStateReader
 from pokeai.perception.navigator import Navigator
 from pokeai.skills.battle import Battle
 
@@ -32,7 +31,6 @@ def main() -> int:
     b = BizHawkBridge(timeout=180)
     say("waiting for ai_bridge to (re)connect…")
     b.wait_for_bizhawk()
-    reader = FireRedStateReader(b)
     nav = Navigator(b)
     battle = Battle(b)
 

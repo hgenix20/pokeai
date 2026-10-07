@@ -6,7 +6,6 @@ reconnect to this within ~8s.
 from __future__ import annotations
 
 from pokeai.emulator.bizhawk_bridge import BizHawkBridge
-from pokeai.emulator.firered_state_reader import FireRedStateReader
 from pokeai.perception.navigator import Navigator
 
 OUT = r"C:\Users\Sagac\OneDrive\KameronOS\PROJECTS\Pokemon-Red-AI\pokeai\states\bizhawk\probe_1f.png"

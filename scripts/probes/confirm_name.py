@@ -8,7 +8,6 @@ would add one char — check the screenshot after and delete with B if so.
 """
 from __future__ import annotations
 
-import sys
 import time
 
 from pokeai.emulator.bizhawk_bridge import BizHawkBridge

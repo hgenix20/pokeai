@@ -9,7 +9,7 @@
 - **No game API.** Perception is deterministic, read live from emulator RAM (party, position, battle state, menu cursors, bag, story flags) — a real grounding/perception problem, not a scripted bot.
 - **Long-horizon, sparse-reward decision making.** Hierarchical planning and navigation (`walk_to` / warp handling), battle and capture strategy, and a **fact-gated storyline dispatcher** that resumes correct play from any save state and sustains hours of unattended progression.
 - **Pluggable strategies.** Random, heuristic, and deliberative "brain" strategies are swappable and operator/viewer-selectable (see `configs/`).
-- **Built to be measured.** Ground-truth verifiers on real game state, save-state checkpointing for reproducible runs, and a **large automated test suite (~765 tests across the full project)** exercising perception, planning, battle logic, pathing, and the story dispatcher.
+- **Built to be measured.** Ground-truth verifiers on real game state, save-state checkpointing for reproducible runs, and a **445 automated tests** exercising perception, planning, battle logic, pathing, and the story dispatcher.
 - **Observable.** An operator/viewer web dashboard streams live state and allows strategy switching during a run.
 
 ## Architecture
@@ -33,7 +33,7 @@ docs/           architecture, core-gameplay design, roadmap, walkthrough knowled
 
 ## Getting started
 
-Requires Python 3.12+ and the **BizHawk** emulator. You must supply your **own legally-obtained Pokémon ROM** — no ROM is included in this repository.
+Requires Python 3.10+ and the **BizHawk** emulator. You must supply your **own legally-obtained Pokémon ROM** — no ROM is included in this repository.
 
 ```bash
 python -m pip install -e .

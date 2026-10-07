@@ -193,7 +193,7 @@ def main() -> int:
             return fail(b, "battle never triggered", "t_trigger.png")
         elvl, ehp, emx = battle.enemy_stats()
         say(f"  BATTLE ON — GROK's mon lv{elvl} {ehp}/{emx}")
-        verdict = battle.fight(narrate=lambda l: say("  " + l))
+        verdict = battle.fight(narrate=lambda line: say("  " + line))
         say(f"  verdict: {verdict}")
         if verdict == "win":
             money_won = money0 + 80

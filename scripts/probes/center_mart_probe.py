@@ -87,7 +87,7 @@ def main() -> int:
             stand = (nurse[0], nurse[1] + 2)
             say(f"  nurse guess {nurse}, stand {stand} "
                 f"(walkable={nav.vision.walkable(*stand)})")
-            say(f"  trying counter-talk heal…")
+            say("  trying counter-talk heal…")
             healed = svc.heal_here(nurse, stand=stand)
             s = reader.read()
             say(f"  heal_here -> {healed} (HP {s.party_total_hp}/{s.party_total_max_hp})")

@@ -34,7 +34,6 @@ from pokeai.skills.journey import (
     WildPolicy,
     cross_edge,
     leave_building_safe,
-    warp_exit,
 )
 from pokeai.skills.overworld import Overworld
 from pokeai.skills.services import CENTERS, Services
@@ -342,7 +341,6 @@ def stage_moon(b, reader, nav, ow, battle, catch, policy, row,
     mark_arrival_warp()
     repel_tap()
     sticky: dict = {}
-    cave_t0 = time.time()
     deadline = time.time() + 3600
     # Probed 2026-07-06: BOTH 1F Route-4 doors land on the WEST shelf (x19);
     # the east side (x>=31) is only reachable via the B1F door (32,5). The

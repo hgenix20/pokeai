@@ -1,7 +1,7 @@
 [project]
 name = "pokeai"
 version = "0.1.0"
-description = "Modular Pokémon Red AI learning framework"
+description = "Long-horizon autonomous agent for Pokémon FireRed through BizHawk, with the earlier Pokémon Red (PyBoy) learning framework"
 requires-python = ">=3.10"
 dependencies = [
     "pyboy>=2.6.1",
@@ -39,3 +39,15 @@ target-version = "py310"
 "scripts/debug_movement.py" = ["E701", "E702"]
 # Imports after pytest.importorskip("torch") — the standard skip pattern.
 "tests/test_dqn_agent.py" = ["E402"]
+# Probe scripts set the console encoding before their imports and keep one-liner style.
+"scripts/probes/*.py" = ["E402", "E701", "E702"]
+"scripts/probe_press.py" = ["E402"]
+"scripts/*.py" = ["E701", "E702"]
+# Skill and story tables write one statement per case on a line. Lint debt: split them.
+"src/pokeai/skills/battle.py" = ["E702"]
+"src/pokeai/skills/catch.py" = ["E702"]
+"src/pokeai/skills/services.py" = ["E702"]
+"src/pokeai/agents/story_part4.py" = ["E702"]
+"src/pokeai/agents/field_brain.py" = ["E702"]
+"src/pokeai/agents/firered_intro.py" = ["E702"]
+"tests/test_firered_state_reader.py" = ["E702"]

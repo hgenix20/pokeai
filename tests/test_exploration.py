@@ -160,7 +160,7 @@ def test_obs_space_matches_obs_dim_helper(tmp_path):
         env.close()
 
 
-# --- 2A-2: Curiosity reward (HCQM 5.1) ---
+# --- 2A-2: Curiosity reward (capability 5.1) ---
 
 
 def test_curiosity_rewards_novel_positions():
@@ -183,7 +183,7 @@ def test_curiosity_rewards_novel_positions():
 
 
 def test_curiosity_persists_across_episodes():
-    """HCQM 5.1: visit counts persist across episodes within a run."""
+    """Capability 5.1: visit counts persist across episodes within a run."""
     weights = RewardWeights(curiosity=1.0)
     engine = RewardEngine(weights)
 
@@ -205,7 +205,7 @@ def test_curiosity_disabled_by_default():
     assert b.curiosity == 0.0
 
 
-# --- 2A-3: Anti-loop adaptability (HCQM 5.2) ---
+# --- 2A-3: Anti-loop adaptability (capability 5.2) ---
 
 
 def test_stuck_penalty_after_repeated_action_no_movement():

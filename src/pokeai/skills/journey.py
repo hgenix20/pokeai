@@ -21,7 +21,7 @@ from __future__ import annotations
 import time
 from collections import deque
 
-from pokeai.agents.field_brain import flee_or_fight, in_real_battle
+from pokeai.agents.field_brain import flee_or_fight
 
 DIRS = {
     "NORTH": (0, -1, "UP"),

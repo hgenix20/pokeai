@@ -66,7 +66,9 @@ class StoryAgent:
         self.idx = 0
         self.thought = "starting out"
         cm = nav.current_map
-        party = lambda: emu.read_byte(GPLAYER_PARTY_COUNT)
+        def party():
+            return emu.read_byte(GPLAYER_PARTY_COUNT)
+
         self.objs = [
             _Obj("Leave the bedroom", lambda: cm() != BEDROOM,
                  lambda: nav.take_warp(nav.map_warps()[0]) if nav.map_warps() else None),

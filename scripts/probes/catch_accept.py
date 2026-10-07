@@ -14,7 +14,6 @@ except (AttributeError, ValueError):
 
 from pokeai.emulator.bizhawk_bridge import BizHawkBridge
 from pokeai.emulator.firered_state_reader import GPLAYER_PARTY_COUNT
-from pokeai.perception.navigator import Navigator
 from pokeai.skills.battle import Battle
 from pokeai.skills.catch import Catch
 
@@ -39,7 +38,6 @@ def in_real_battle(b, battle):
 def main() -> int:
     b = BizHawkBridge(timeout=120)
     b.wait_for_bizhawk()
-    nav = Navigator(b)
     battle = Battle(b)
     catch = Catch(b, battle)
     if not b.load_state(SLOTS + r"\slot_8.state"):
