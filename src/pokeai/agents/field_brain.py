@@ -165,19 +165,27 @@ def flee_or_fight(b, battle, catch=None) -> str:
     Proven pattern from scripts/route1_to_viridian.py."""
     for _ in range(4):
         for _ in range(2):
-            b.tap("B", 6); time.sleep(0.35)
-        b.tap("LEFT", 5); time.sleep(0.2)   # normalize toward FIGHT
-        b.tap("UP", 5); time.sleep(0.2)
-        b.tap("RIGHT", 6); time.sleep(0.3)  # -> BAG
-        b.tap("DOWN", 6); time.sleep(0.3)   # -> RUN
-        b.tap("A", 6); time.sleep(0.6)
+            b.tap("B", 6)
+            time.sleep(0.35)
+        b.tap("LEFT", 5)
+        time.sleep(0.2)  # normalize toward FIGHT
+        b.tap("UP", 5)
+        time.sleep(0.2)
+        b.tap("RIGHT", 6)
+        time.sleep(0.3)  # -> BAG
+        b.tap("DOWN", 6)
+        time.sleep(0.3)  # -> RUN
+        b.tap("A", 6)
+        time.sleep(0.6)
         for _ in range(4):
-            b.tap("B", 6); time.sleep(0.35)
+            b.tap("B", 6)
+            time.sleep(0.35)
         if not in_real_battle(b, battle, catch):
             return "fled"
     verdict = battle.fight()
     for _ in range(15):
-        b.tap("A", 6); time.sleep(0.35)
+        b.tap("A", 6)
+        time.sleep(0.35)
     return verdict
 
 

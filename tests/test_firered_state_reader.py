@@ -25,10 +25,12 @@ class MockGBA:
         self.mem[addr] = v & 0xFF
 
     def w16(self, addr: int, v: int):
-        self.w8(addr, v); self.w8(addr + 1, v >> 8)
+        self.w8(addr, v)
+        self.w8(addr + 1, v >> 8)
 
     def w32(self, addr: int, v: int):
-        self.w16(addr, v & 0xFFFF); self.w16(addr + 2, v >> 16)
+        self.w16(addr, v & 0xFFFF)
+        self.w16(addr + 2, v >> 16)
 
     def wbytes(self, addr: int, data: bytes):
         for i, b in enumerate(data):

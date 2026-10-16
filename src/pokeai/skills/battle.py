@@ -157,16 +157,21 @@ class Battle:
         """True iff the action menu is up and accepting input. Normalize-first
         (2026-07-05): LEFT+UP parks a live menu on FIGHT from ANY rest
         position; verify by RAM (cursor==0), then probe RIGHT->1, restore."""
-        r0 = self.b.read_byte(ACTION_CURSOR); time.sleep(0.3)
+        r0 = self.b.read_byte(ACTION_CURSOR)
+        time.sleep(0.3)
         if self.b.read_byte(ACTION_CURSOR) != r0:
             return False
-        self.b.tap("LEFT", 5); time.sleep(0.25)
-        self.b.tap("UP", 5); time.sleep(0.25)
+        self.b.tap("LEFT", 5)
+        time.sleep(0.25)
+        self.b.tap("UP", 5)
+        time.sleep(0.25)
         if self.b.read_byte(ACTION_CURSOR) != 0:
             return False
-        self.b.tap("RIGHT", 5); time.sleep(0.25)
+        self.b.tap("RIGHT", 5)
+        time.sleep(0.25)
         moved = self.b.read_byte(ACTION_CURSOR)
-        self.b.tap("LEFT", 5); time.sleep(0.25)
+        self.b.tap("LEFT", 5)
+        time.sleep(0.25)
         return moved == 1 and self.b.read_byte(ACTION_CURSOR) == 0
 
     def wait_for_menu(self, tries: int = 30) -> bool:
@@ -175,13 +180,16 @@ class Battle:
         for _ in range(tries):
             if self.menu_up():
                 return True
-            self.b.tap("B", 8); time.sleep(0.5)
+            self.b.tap("B", 8)
+            time.sleep(0.5)
         return False
 
     def to_fight(self) -> bool:
         """Normalize the action cursor onto FIGHT (LEFT+UP never wrap)."""
-        self.b.tap("LEFT", 5); time.sleep(0.2)
-        self.b.tap("UP", 5); time.sleep(0.2)
+        self.b.tap("LEFT", 5)
+        time.sleep(0.2)
+        self.b.tap("UP", 5)
+        time.sleep(0.2)
         return self.b.read_byte(ACTION_CURSOR) == 0
 
     # ---- decisions --------------------------------------------------------
@@ -207,12 +215,17 @@ class Battle:
         """From the action menu: FIGHT -> normalize move cursor to slot 0 ->
         walk to `idx` -> commit."""
         self.to_fight()
-        self.b.tap("A", 6); time.sleep(0.8)       # FIGHT -> move menu
-        self.b.tap("UP", 5); time.sleep(0.2)      # normalize to TL
-        self.b.tap("LEFT", 5); time.sleep(0.2)
+        self.b.tap("A", 6)
+        time.sleep(0.8)  # FIGHT -> move menu
+        self.b.tap("UP", 5)
+        time.sleep(0.2)  # normalize to TL
+        self.b.tap("LEFT", 5)
+        time.sleep(0.2)
         for d in _MOVE_PATHS.get(idx, ()):
-            self.b.tap(d, 5); time.sleep(0.25)
-        self.b.tap("A", 6); time.sleep(0.8)       # commit the move
+            self.b.tap(d, 5)
+            time.sleep(0.25)
+        self.b.tap("A", 6)
+        time.sleep(0.8)  # commit the move
 
     def _potion_index(self) -> int | None:
         """Items-pocket cursor index of the first HP-heal item, or None."""
@@ -235,21 +248,29 @@ class Battle:
             return False
         hp0 = self.my_stats()[1]
         self.to_fight()
-        self.b.tap("RIGHT", 6); time.sleep(0.3)   # FIGHT -> BAG
-        self.b.tap("A", 6); time.sleep(1.3)       # open bag (ITEMS pocket)
+        self.b.tap("RIGHT", 6)
+        time.sleep(0.3)  # FIGHT -> BAG
+        self.b.tap("A", 6)
+        time.sleep(1.3)  # open bag (ITEMS pocket)
         for _ in range(idx):
-            self.b.tap("DOWN", 5); time.sleep(0.3)
-        self.b.tap("A", 6); time.sleep(0.8)       # select item
-        self.b.tap("A", 6); time.sleep(0.8)       # USE
-        self.b.tap("A", 6); time.sleep(0.8)       # target = active (cursor default)
+            self.b.tap("DOWN", 5)
+            time.sleep(0.3)
+        self.b.tap("A", 6)
+        time.sleep(0.8)  # select item
+        self.b.tap("A", 6)
+        time.sleep(0.8)  # USE
+        self.b.tap("A", 6)
+        time.sleep(0.8)  # target = active (cursor default)
         for _ in range(8):                        # ride the heal text
             if self.my_stats()[1] > hp0:
                 break
-            self.b.tap("B", 5); time.sleep(0.4)
+            self.b.tap("B", 5)
+            time.sleep(0.4)
         healed = self.my_stats()[1] > hp0
         if not healed:                            # back out of any stray menu
             for _ in range(3):
-                self.b.tap("B", 5); time.sleep(0.3)
+                self.b.tap("B", 5)
+                time.sleep(0.3)
         return healed
 
     def send_next_mon(self) -> bool:
@@ -268,10 +289,14 @@ class Battle:
         for _ in range(14):
             if self.menu_up():
                 return True
-            self.b.tap("B", 5); time.sleep(0.5)     # clear any box first
-            self.b.tap("UP", 5); time.sleep(0.4)    # step the list cursor
-            self.b.tap("A", 6); time.sleep(0.8)     # pick under cursor
-            self.b.tap("A", 6); time.sleep(1.0)     # SHIFT -> send in
+            self.b.tap("B", 5)
+            time.sleep(0.5)  # clear any box first
+            self.b.tap("UP", 5)
+            time.sleep(0.4)  # step the list cursor
+            self.b.tap("A", 6)
+            time.sleep(0.8)  # pick under cursor
+            self.b.tap("A", 6)
+            time.sleep(1.0)  # SHIFT -> send in
         return self.menu_up()
 
     # ---- ride-outs ---------------------------------------------------------
@@ -284,7 +309,8 @@ class Battle:
         """Advance end-of-battle text (XP, level-ups, payout) until MOVEMENT
         returns. B declines learn/nickname prompts safely."""
         for _ in range(cap):
-            self.b.tap(button, 5); time.sleep(0.4)
+            self.b.tap(button, 5)
+            time.sleep(0.4)
             if self._moved_probe():
                 return True
         return False
@@ -361,7 +387,8 @@ class Battle:
                     break
                 if self.menu_up():
                     break
-                self.b.tap("B", 5); time.sleep(0.4)
+                self.b.tap("B", 5)
+                time.sleep(0.4)
         else:
             return "stuck"
         return "stuck"

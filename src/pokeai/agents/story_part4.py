@@ -354,35 +354,48 @@ def stage_moon(b, reader, nav, ow, svc, battle, catch, policy, row,
         def attempt() -> bool:
             count0 = reader.count_item(ITEM_REPEL)
             ow.wait_control(6)              # entry transitions eat START
-            b.tap("START", 8); pace(1.2)
+            b.tap("START", 8)
+            pace(1.2)
             k0 = cursor()
             # the static persists while the menu is CLOSED - prove it is
             # live by moving it one step and watching it follow
-            b.tap("DOWN", 5); pace(0.35)
+            b.tap("DOWN", 5)
+            pace(0.35)
             k = cursor()
             if k != (k0 + 1) % MENU_LEN:    # menu not open (stale byte)
-                b.tap("B", 5); pace(0.5)
+                b.tap("B", 5)
+                pace(0.5)
                 return False
             downs = (BAG_INDEX - k) % MENU_LEN
             for _ in range(downs):
-                b.tap("DOWN", 5); pace(0.35)
+                b.tap("DOWN", 5)
+                pace(0.35)
             if cursor() != BAG_INDEX:       # drifted: bail cleanly
-                b.tap("B", 5); pace(0.5)
+                b.tap("B", 5)
+                pace(0.5)
                 return False
-            b.tap("A", 6); pace(1.8)        # open BAG (slow animation)
-            b.tap("LEFT", 5); pace(0.5)
-            b.tap("LEFT", 5); pace(0.5)     # -> ITEMS pocket
+            b.tap("A", 6)
+            pace(1.8)  # open BAG (slow animation)
+            b.tap("LEFT", 5)
+            pace(0.5)
+            b.tap("LEFT", 5)
+            pace(0.5)  # -> ITEMS pocket
             for _ in range(6):
-                b.tap("UP", 5); pace(0.3)   # pin to top (no wrap - probed)
-            b.tap("DOWN", 5); pace(0.4)     # -> REPEL
-            b.tap("A", 6); pace(0.8)        # submenu (cursor on USE)
-            b.tap("A", 6); pace(1.5)        # USE -> message, menus close
+                b.tap("UP", 5)
+                pace(0.3)  # pin to top (no wrap - probed)
+            b.tap("DOWN", 5)
+            pace(0.4)  # -> REPEL
+            b.tap("A", 6)
+            pace(0.8)  # submenu (cursor on USE)
+            b.tap("A", 6)
+            pace(1.5)  # USE -> message, menus close
             # GENEROUS cleanup: an under-closed bag ate 18 minutes of
             # "walking" presses live 08:31-08:50 (the "lingered" message
             # ate a B and the bag stayed open through the whole approach).
             # Max menu depth here is 4; 8 settled B's cannot leave one up.
             for _ in range(8):
-                b.tap("B", 5); pace(0.6)
+                b.tap("B", 5)
+                pace(0.6)
             return reader.count_item(ITEM_REPEL) < count0
 
         used = attempt()

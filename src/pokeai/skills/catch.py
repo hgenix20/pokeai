@@ -78,19 +78,26 @@ class Catch:
                     return False
             if self.menu_up():
                 return True
-            self.b.tap("B", 6); time.sleep(0.4)
+            self.b.tap("B", 6)
+            time.sleep(0.4)
         return False
 
     # ---- one throw ------------------------------------------------------------
     def _throw_one(self) -> None:
         """From the action menu (cursor on FIGHT), open the bag, switch to the
         POKe BALLS pocket, and throw the top ball."""
-        self.b.tap("RIGHT", 6); time.sleep(0.3)     # FIGHT -> BAG
-        self.b.tap("A", 6); time.sleep(1.3)         # open bag (ITEMS pocket)
-        self.b.tap("RIGHT", 6); time.sleep(0.5)     # ITEMS -> KEY ITEMS
-        self.b.tap("RIGHT", 6); time.sleep(0.7)     # KEY ITEMS -> POKe BALLS
-        self.b.tap("A", 6); time.sleep(0.8)         # select top ball (throws)
-        self.b.tap("A", 6); time.sleep(0.8)         # confirm any USE submenu
+        self.b.tap("RIGHT", 6)
+        time.sleep(0.3)  # FIGHT -> BAG
+        self.b.tap("A", 6)
+        time.sleep(1.3)  # open bag (ITEMS pocket)
+        self.b.tap("RIGHT", 6)
+        time.sleep(0.5)  # ITEMS -> KEY ITEMS
+        self.b.tap("RIGHT", 6)
+        time.sleep(0.7)  # KEY ITEMS -> POKe BALLS
+        self.b.tap("A", 6)
+        time.sleep(0.8)  # select top ball (throws)
+        self.b.tap("A", 6)
+        time.sleep(0.8)  # confirm any USE submenu
 
     def party_count(self) -> int:
         return self.b.read_byte(GPLAYER_PARTY_COUNT)
@@ -115,7 +122,8 @@ class Catch:
         until MOVEMENT returns (ground truth for 'back in the overworld'). A
         level-up can add several boxes, so a fixed tap count is not enough."""
         for _ in range(30):
-            self.b.tap("B", 5); time.sleep(0.4)
+            self.b.tap("B", 5)
+            time.sleep(0.4)
             p0 = self.b.player_xy()
             self.b.press_direction_settle("LEFT")
             if self.b.player_xy() != p0:
@@ -138,25 +146,34 @@ class Catch:
                     return          # cannot flee a trainer: caller must FIGHT
                 # a live mon is out and the action menu is up: RUN
                 self._to_fight()
-                self.b.tap("RIGHT", 6); time.sleep(0.3)   # -> BAG
-                self.b.tap("DOWN", 6); time.sleep(0.3)    # -> RUN
-                self.b.tap("A", 6); time.sleep(0.8)
+                self.b.tap("RIGHT", 6)
+                time.sleep(0.3)  # -> BAG
+                self.b.tap("DOWN", 6)
+                time.sleep(0.3)  # -> RUN
+                self.b.tap("A", 6)
+                time.sleep(0.8)
                 for _ in range(6):
-                    self.b.tap("B", 5); time.sleep(0.4)
+                    self.b.tap("B", 5)
+                    time.sleep(0.4)
                 continue
             for _ in range(3):                      # declines send-next -> flee
-                self.b.tap("B", 5); time.sleep(0.4)
+                self.b.tap("B", 5)
+                time.sleep(0.4)
             p0 = self.b.player_xy()
             self.b.press_direction_settle("LEFT")
             if self.b.player_xy() != p0:
                 return
             # possibly the forced party screen: advance + pick + shift; a
             # fainted pick just shows an error box the next B round clears
-            self.b.tap("DOWN", 5); time.sleep(0.3)
-            self.b.tap("A", 6); time.sleep(0.6)
-            self.b.tap("A", 6); time.sleep(0.8)
+            self.b.tap("DOWN", 5)
+            time.sleep(0.3)
+            self.b.tap("A", 6)
+            time.sleep(0.6)
+            self.b.tap("A", 6)
+            time.sleep(0.8)
             for _ in range(3):
-                self.b.tap("B", 5); time.sleep(0.4)
+                self.b.tap("B", 5)
+                time.sleep(0.4)
 
     def weaken(self, target_frac: float = 0.30, max_turns: int = 8,
                narrate=None) -> str:
@@ -184,10 +201,14 @@ class Catch:
             if narrate:
                 narrate(f"weakening the foe: {ehp}/{emax} HP (target <= {floor})")
             self._to_fight()
-            self.b.tap("A", 6); time.sleep(0.8)      # FIGHT -> move menu
-            self.b.tap("UP", 5); time.sleep(0.2)     # normalize move cursor
-            self.b.tap("LEFT", 5); time.sleep(0.2)   # -> slot 1
-            self.b.tap("A", 6); time.sleep(0.8)      # commit the move
+            self.b.tap("A", 6)
+            time.sleep(0.8)  # FIGHT -> move menu
+            self.b.tap("UP", 5)
+            time.sleep(0.2)  # normalize move cursor
+            self.b.tap("LEFT", 5)
+            time.sleep(0.2)  # -> slot 1
+            self.b.tap("A", 6)
+            time.sleep(0.8)  # commit the move
             for _ in range(24):                      # ride the turn (~12s cap)
                 ehp_now = self.battle.enemy_stats()[1]
                 if ehp_now == 0:
@@ -199,7 +220,8 @@ class Catch:
                 if self.menu_up():
                     dmg_est = max(dmg_est, ehp - self.battle.enemy_stats()[1])
                     break                            # turn resolved, re-evaluate
-                self.b.tap("B", 5); time.sleep(0.4)
+                self.b.tap("B", 5)
+                time.sleep(0.4)
         return "weakened"
 
     # ---- full attempt: (weaken then) throw until caught or out -----------------
@@ -221,7 +243,8 @@ class Catch:
         except Exception:
             pass
         for _ in range(6):                        # keyboard never came: decline
-            self.b.tap("B", 5); time.sleep(0.3)
+            self.b.tap("B", 5)
+            time.sleep(0.3)
 
     def attempt(self, max_balls: int = 6, narrate=None,
                 weaken_to: float | None = None, nickname: str | None = None) -> str:
@@ -259,11 +282,13 @@ class Catch:
                     if nickname:
                         self._name_catch(nickname)   # answer the naming prompt YES
                     for _ in range(6):               # settle post-catch
-                        self.b.tap("B", 5); time.sleep(0.3)
+                        self.b.tap("B", 5)
+                        time.sleep(0.3)
                     return "caught"
                 if self.battle.party_fainted_count() > fainted0:
                     self._ride_out_lead_faint()
                     return "lost"
-                self.b.tap("B", 5); time.sleep(0.5)
+                self.b.tap("B", 5)
+                time.sleep(0.5)
             # broke free: the foe took its turn, we loop back to the menu
         return "out_of_balls"

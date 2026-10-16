@@ -126,14 +126,19 @@ class Intro:
         for ch in name:
             tx, ty = GRID[ch]
             for _ in range(tx - cx):
-                self.b.tap("RIGHT", 6); time.sleep(0.22)
+                self.b.tap("RIGHT", 6)
+                time.sleep(0.22)
             for _ in range(cx - tx):
-                self.b.tap("LEFT", 6); time.sleep(0.22)
+                self.b.tap("LEFT", 6)
+                time.sleep(0.22)
             for _ in range(ty - cy):
-                self.b.tap("DOWN", 6); time.sleep(0.22)
+                self.b.tap("DOWN", 6)
+                time.sleep(0.22)
             for _ in range(cy - ty):
-                self.b.tap("UP", 6); time.sleep(0.22)
-            self.b.tap("A", 6); time.sleep(0.35)
+                self.b.tap("UP", 6)
+                time.sleep(0.22)
+            self.b.tap("A", 6)
+            time.sleep(0.35)
             cx, cy = tx, ty
 
 

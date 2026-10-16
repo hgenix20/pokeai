@@ -176,7 +176,8 @@ class Services:
         face = info.get("face", "UP")
         if not self.nav.go_to(stand):
             return {"ok": False, "reason": "no_counter_path"}
-        self.b.press_button_held(face, 12); time.sleep(0.3)
+        self.b.press_button_held(face, 12)
+        time.sleep(0.3)
 
         def settle(extra=0.3):
             # SETTLE-BASED pacing (the intro lesson): fixed sleeps race the
@@ -184,10 +185,13 @@ class Services:
             self.ow.wait_settle()
             time.sleep(extra)
 
-        self.b.tap("A", 6); settle(0.6)          # greet -> BUY/SELL/SEE YA
-        self.b.tap("A", 6); settle(1.0)          # BUY -> item list (slow open)
+        self.b.tap("A", 6)
+        settle(0.6)  # greet -> BUY/SELL/SEE YA
+        self.b.tap("A", 6)
+        settle(1.0)  # BUY -> item list (slow open)
         for _ in range(slot):
-            self.b.tap("DOWN", 5); time.sleep(0.35)
+            self.b.tap("DOWN", 5)
+            time.sleep(0.35)
         # SINGLE-UNIT ROUNDS with per-round money verification: the qty box
         # defaults to x1, so four settle-paced As buy exactly one unit from
         # either the list or the qty box (any 4-A window crosses exactly one
@@ -200,16 +204,22 @@ class Services:
         while bought < qty and attempts < qty * 2 + 2:
             attempts += 1
             m0 = self.reader.read_money()
-            self.b.tap("A", 6); settle(0.5)      # select item -> qty x1
-            self.b.tap("A", 6); settle(0.5)      # lock qty -> confirm prompt
-            self.b.tap("A", 6); settle(0.7)      # YES -> purchase
-            self.b.tap("A", 6); settle(0.5)      # "Here you are!" -> list
+            self.b.tap("A", 6)
+            settle(0.5)  # select item -> qty x1
+            self.b.tap("A", 6)
+            settle(0.5)  # lock qty -> confirm prompt
+            self.b.tap("A", 6)
+            settle(0.7)  # YES -> purchase
+            self.b.tap("A", 6)
+            settle(0.5)  # "Here you are!" -> list
             if self.reader.read_money() < m0:
                 bought += 1
             else:
-                self.b.tap("B", 5); settle(0.4)  # realign toward the list
+                self.b.tap("B", 5)
+                settle(0.4)  # realign toward the list
         for _ in range(3):                       # back out: list -> menu -> SEE YA
-            self.b.tap("B", 5); settle(0.2)
+            self.b.tap("B", 5)
+            settle(0.2)
         # a lingering farewell box would strand us like the nurse's did —
         # B-based ride-out (an A here re-opens the shop)
         self._ride_out_dialogue(step="DOWN", button="B")
